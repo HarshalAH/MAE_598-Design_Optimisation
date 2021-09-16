@@ -1,38 +1,107 @@
 import numpy as np
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
+from line_search_bt import *
 
-obj = lambda x: (1 - 2 * x[0] - 3 * x[1] + 1) ** 2 + x[0] ** 2 + (x[1] - 1) ** 2
+x = np.array([1, 1])
+
+convergence_criteria = .001
+alpha = 1
+conv = 1
+error = 1
+sol = []
+err = []
+itt = []
+
+xstar = [-0.14247862, 0.78547484]
 
 
-def grad(x):
-    return [10 * x[0] + 12 * x[1] - 8, 12 * x[0] + 20 * x[1] - 14]
+def func(x):
+    return 5 * x[0] ** 2 + 12 * x[0] * x[1] - 8 * x[0] + 10 * x[1] ** 2 - 14 * x[1] + 5
 
 
-eps = 1e-3
-x0 = [0., 0.]
-k = 0
-soln = [x0]
-x = soln[k]
-error = np.linalg.norm(grad(x))
-a = 0.01
+def gradient(x):
+    return np.array([10 * x[0] + 12 * x[1] - 8, 12 * x[0] + 20 * x[1] - 14])
 
-while error >= eps:
-    x = np.array(x)
-    soln.append(x)
-    error = np.linalg.norm(grad(x))
 
-error2_c1 = np.asarray([])
-error2_c2 = np.asarray([])
-for lineup in range(1, np.size(soln, 0)):
-    sols = np.array(soln[lineup]) - np.array(soln[lineup - 1])
-    error2_c1 = np.append(error2_c1, sols[0])
-    error2_c2 = np.append(error2_c2, sols[1])
+sol.append(float(abs(func(x) - func(xstar))))
 
-error2 = np.column_stack((error2_c1, error2_c2))
-print(error2)
+while conv >= convergence_criteria:
+    d = -gradient(x)
 
-plt.title("Final Graph")
-plt.xlabel("x")
-plt.ylabel("y")
-plt.plot(error2_c1, error2_c2)
-plt.show()
+    alpha = line_search_bt(x, func, gradient, alpha, .5, .5, d)
+
+    x = x - alpha * gradient(x)
+
+    ans = func(x)
+
+    diff = abs(func(x) - func(xstar))
+
+    sol.append(float(diff))
+
+    conv = np.linalg.norm(gradient(x))
+
+error = abs(func(sol) - func(xstar))
+x = np.array([-2 * x[0] - 3 * x[1] + 1, x[0], x[1]])
+
+print(x)
+
+plt.plot(sol)
+plt.title("Gradient Descent W/ Line Tracking")
+plt.xlabel("Iteration")
+plt.ylabel("Convergence")
+
+plt.yscale("log")
+
+# NEWTONS
+
+import numpy as np
+import matplotlib.pyplot as plt
+from line_search_bt import *
+
+x = np.array([1, 1])
+convergence_criteria = .001
+conv = 1
+alpha = 1
+error = 1
+err = []
+sol = []
+
+xstar = [-0.14247862, 0.78547484]
+
+
+def func(x):
+    return 5 * x[0] ** 2 + 12 * x[0] * x[1] - 8 * x[0] + 10 * x[1] ** 2 - 14 * x[1] + 5
+
+
+def gradient(x):
+    return np.array([10 * x[0] + 12 * x[1] - 8, 12 * x[0] + 20 * x[1] - 14])
+
+
+Hessian = np.array([[10, 12], [12, 20]])
+
+sol.append(float(abs(func(x) - func(xstar))))
+
+while conv >= convergence_criteria:
+    d = -np.matmul(np.linalg.inv(Hessian), gradient(x))
+
+    alpha = line_search_bt(x, func, gradient, alpha, .5, .5, d)
+
+    x = x - alpha * np.matmul(np.linalg.inv(Hessian), gradient(x))
+
+    ans = func(x)
+
+    diff = abs(func(x) - func(xstar))
+
+    sol.append(float(diff))
+
+    conv = np.linalg.norm(gradient(x))
+
+x = np.array([-2 * x[0] - 3 * x[1] + 1, x[0], x[1]])
+print(x)
+
+plt.plot(sol)
+plt.title("Newton's Method W/ Line Tracking")
+plt.xlabel("Iteration")
+plt.ylabel("Convergence")
+plt.yscale("log")
+
