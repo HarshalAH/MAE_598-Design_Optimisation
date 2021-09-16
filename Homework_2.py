@@ -84,3 +84,15 @@ plt.xlabel("Iteration")
 plt.ylabel("Convergence")
 plt.yscale("log")
 soln
+
+<img src="IMG-2049.JPG"alt="HW2I1"title="F"/>
+<img src="IMG-2050.JPG"alt="HW2I2"title="F"/
+<img src="IMG-2051.JPG"alt="HW2I3"title="F"/>
+<img src="IMG-2052.JPG.jpg"alt="HW2I1"title="F"/>
+<img src="IMG-2053.JPG"alt="HW2I1"title="F"/>
+<img src="IMG-2054.JPG"alt="HW2I1"title="F"/>
+<img src="IMG-2055.JPG"alt="HW2I1"title="F"/>
+<img src="IMG-2056.JPG"alt="HW2I1"title="F"/>
+<img src="IMG-2057.JPG"alt="HW2I1"title="F"/>
+<img src="IMG-2058.JPG"alt="HW2I1"title="F"/>
+<img src="IMG-2059.JPG"alt="HW2I1"title="F"/>
