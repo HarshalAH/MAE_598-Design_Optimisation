@@ -14,7 +14,7 @@ dg = @(x) [-2 2*x(2) ; 5 2*(x(2)-1)];
 % computational cost from finite difference calculations for them.
 
 % % Specify algorithm
-opt.alg = 'mysqp'; % 'myqp' or 'matlabqp'
+opt.alg = 'myqp'; % 'myqp' or 'matlabqp'
 
 % Turn on or off line search. You could turn on line search once other
 % parts of the program are debugged.
@@ -36,7 +36,7 @@ end
 solution = mysqp(f, df, g, dg, x0, opt);
 
 %% Report
-report(solution,f,g);
+%report(solution,f,g);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
