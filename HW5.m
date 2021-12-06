@@ -34,9 +34,12 @@ end
 %% Run optimization
 % Run your implementation of SQP algorithm. See mysqp.m
 solution = mysqp(f, df, g, dg, x0, opt);
+x_soln = solution.x(:,end)
+g_soln = g(solution.x(:,end))
+f_soln = f(solution.x(:,end))
 
 %% Report
-%report(solution,f,g);
+report(solution,f,g);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -275,4 +278,60 @@ function [s, mu] = solve_activeset(x, W, c, A, b)
     s = sol(1:numel(x));                % Extract s from the solution
     mu = sol(numel(x)+1:numel(sol));    % Extract mu from the solution
 
+end
+
+function report(solution,f,g)
+    figure; % Open an empty figure window
+    hold on; % Hold on to the current figure
+    
+    % Draw a 2D contour plot for the objective function
+    % You can edit drawing parameters within the file: drawContour.m
+    drawContour(f,g);
+    
+    % Plot the search path
+    x = solution.x;
+    iter = size(x,2);
+    plot(x(1,1),x(2,1),'.y','markerSize',20);
+    for i = 2:iter
+        % Draw lines. Type "help line" to see more drawing options.
+        line([x(1,i-1),x(1,i)],[x(2,i-1),x(2,i)],'Color','y');
+        plot(x(1,i),x(2,i),'.y','markerSize',20);
+    end
+    
+    plot(x(1,i),x(2,i),'*k','markerSize',20);
+    % Plot the convergence
+    F = zeros(iter,1);
+    for i = 1:iter
+        F(i) = feval(f,x(:,i));
+    end
+    figure;
+    plot(1:iter, log(F-F(end)+eps),'k','lineWidth',3);
+end
+function drawContour(f, g)
+
+    % Define the range of the contour plot
+    x = -6:0.1:6;
+    y = -6:0.1:6;
+    
+    % Evaluate objective values on the grid
+    Zf = zeros(length(y),length(x));
+    Zg1 = Zf; Zg2 = Zf;
+    for i = 1:length(x)
+        for j = 1:length(y)
+            Zf(j,i) = feval(f,[x(i);y(j)]);
+            gall = feval(g,[x(i);y(j)]);
+            Zg1(j,i) = gall(1);
+            Zg2(j,i) = gall(2);
+        end
+    end
+    
+    % Plot contour
+    contourf(x, y, Zf, 100);
+    contour(x,y,Zg1,[0;0],'Color', [1, 0, 0])
+    contour(x,y,Zg2,[0;0],'Color', [1, 0, 1])
+    Zg1(Zg1>0) = NaN;
+    Zg2(Zg2>0) = NaN;
+    contour(x,y,Zg1, 10,'Color', [1, 0, 0])
+    contour(x,y,Zg2, 10,'Color', [1, 0, 1])
+    shading flat;
 end
